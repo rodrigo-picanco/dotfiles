@@ -1,0 +1,21 @@
+#!/bin/bash
+
+case $1 in
+  'nuke')
+    git branch | xargs git branch -D
+    git clean -df && git reset HEAD --hard && git pull
+    git stash clear
+  ;;
+
+  'last-conflict')
+    git status | grep "both modified" | head -1 | awk -F":"  '{ print $2 }'
+  ;;
+
+  'tags')
+    git tag -l --sort=v:refname
+  ;;
+
+  'prs')
+    gh pr list --assignee @me
+  ;;
+esac

@@ -1,0 +1,2 @@
+#!/bin/zsh
+pnpm run test $1.spec.ts --coverage --collectCoverageFrom=$1.ts ${@:2}
