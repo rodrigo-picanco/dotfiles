@@ -21,7 +21,7 @@ vim.o.termguicolors = true
 vim.o.undodir = os.getenv('HOME') .. '/.vim/undodir'
 vim.o.undofile = true
 vim.o.wrap = false
-vim.o.loaded_netrw = 0
+-- vim.o.loaded_netrw = 0
 vim.keymap.set('n', '<leader>f', vim.lsp.buf.format)
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
