@@ -40,9 +40,16 @@ symlinks() {
         popd
 }
 
+gitconfig() {
+        git config --global rerere.enable true
+        git config --global column.ui auto 
+        git config --global branch.sort -commiterdate
+}
+
 install() {
         packages 
         symlinks
+        gitconfig
 }
 
 install
