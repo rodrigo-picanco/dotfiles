@@ -5,35 +5,41 @@ lazygit() {
         tar xf lazygit.tar.gz lazygit
         sudo install lazygit /usr/local/bin
 }
+tmux() {
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install tmux -yq
+}
+zoxide() {
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install zoxide -y
+}
+stow() {
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install stow -y
+}
+
+packages() {
+        DEBIAN_FRONTEND=noninteractive sudo apt-get upgrade -y
+        lazygit
+        stow
+        tmux 
+        zoxide 
+}
+
 tpm() {
         git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
 zap() {
         zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
 }
-tmux() {
-        sudo apt-get install tmux -y
-}
-zoxide() {
-        sudo apt-get install zoxide -y
-}
-stow() {
-        sudo apt-get install stow -y
-}
 
-packages() {
-        lazygit
-        stow
-        tmux 
-        tpm
+package_managers(){
+        tmp
         zap
-        zoxide 
 }
 
 symlinks() {
-        dotfiles_cd=$(pwd)
+        DOTFILES_PATH=$(pwd)
         pushd ~
-                cp  dotifles_cd -R dotfiles
+                cp $DOTFILES_PATH -R dotfiles
+                rm .zshrc
         popd
         pushd ~/dotfiles
                 stow .config
@@ -50,6 +56,7 @@ install() {
         packages 
         symlinks
         gitconfig
+        package_managers
 }
 
 install
