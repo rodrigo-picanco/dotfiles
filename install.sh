@@ -42,7 +42,7 @@ symlinks() {
                 rm .zshrc
         popd
         pushd ~/dotfiles
-                stow .config
+                stow configs
         popd
 }
 
