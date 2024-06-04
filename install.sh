@@ -30,7 +30,7 @@ zap() {
 }
 
 package_managers(){
-        tmp
+        tpm
         zap
 }
 
@@ -40,9 +40,8 @@ symlinks() {
                 cp $DOTFILES_PATH -R dotfiles
                 rm .zshrc
         popd
-        pushd ~/dotfiles
-                stow configs
-        popd
+        cd ~/dotfiles
+        stow configs
 }
 
 gitconfig() {
