@@ -16,7 +16,6 @@ stow() {
 }
 
 packages() {
-        DEBIAN_FRONTEND=noninteractive sudo apt-get upgrade -y
         lazygit
         stow
         tmux 

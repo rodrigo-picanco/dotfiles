@@ -264,4 +264,10 @@ require('lazy').setup({
                    { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
                 }
     },
+    {
+        "FabijanZulj/blame.nvim",
+        config = function()
+                require("blame").setup()
+        end
+    }
 }, {})
