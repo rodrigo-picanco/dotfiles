@@ -5,33 +5,18 @@ lazygit() {
         tar xf lazygit.tar.gz lazygit
         sudo install lazygit /usr/local/bin
 }
-tmux() {
-        DEBIAN_FRONTEND=noninteractive sudo apt-get install tmux -yq
-}
-zoxide() {
-        DEBIAN_FRONTEND=noninteractive sudo apt-get install zoxide -y
-}
-stow() {
-        DEBIAN_FRONTEND=noninteractive sudo apt-get install stow -y
-}
 
 packages() {
         lazygit
-        stow
-        tmux 
-        zoxide 
+        DEBIAN_FRONTEND=noninteractive sudo apt-get stow tmux zoxide -yq
 }
 
 tpm() {
         git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 }
-zap() {
-        zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
-}
 
 package_managers(){
         tpm
-        zap
 }
 
 symlinks() {
