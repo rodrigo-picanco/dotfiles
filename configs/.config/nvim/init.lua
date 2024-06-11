@@ -70,6 +70,14 @@ require('lazy').setup({
                 'williamboman/mason-lspconfig.nvim',
                 config = function()
                         require('mason-lspconfig').setup({
+                                ensure_installed = { 
+                                        "ruby_lsp",
+                                        "solargraph",
+                                        "sorbet",
+                                        "rubocop",
+                                        "tsserver",
+                                }
+
                                 handlers = {
                                         require('lsp-zero').default_setup,
                                 },
@@ -125,7 +133,6 @@ require('lazy').setup({
                 'stevearc/oil.nvim',
                 opts = {
                         default_file_explorer = true,
-                        experimental_watch_for_changes = false,
                 },
                 keys = function()
                         return {
@@ -175,10 +182,9 @@ require('lazy').setup({
                         nl.setup({
                                 debouce = 2000,
                                 sources = {
-                                        nl.builtins.diagnostics.eslint_d,
-                                        nl.builtins.code_actions.eslint_d,
-                                        nl.builtins.formatting.prettierd,
-                                        nl.builtins.diagnostics.markdownlint,
+                                        nl.builtins.diagnostics.eslint,
+                                        nl.builtins.code_actions.eslint,
+                                        nl.builtins.formatting.prettier,
                                 },
                         })
                 end
@@ -240,10 +246,10 @@ require('lazy').setup({
                                 sections = {
                                         -- lualine_a = {},
                                         -- lualine_b = { "branch", "diff", "diagnostics" },
-                                        -- lualine_c = { { "filename", path = 1 } },
+                                        lualine_c = { { "filename", path = 1 } },
                                         lualine_x = { get_status_icon },
                                         -- lualine_y = { "progress" },
-                                        -- lualine_z = { "location" },
+                                        lualine_z = { "location" },
                                 },
                         })
                 end
