@@ -76,8 +76,7 @@ require('lazy').setup({
                                         "sorbet",
                                         "rubocop",
                                         "tsserver",
-                                }
-
+                                },
                                 handlers = {
                                         require('lsp-zero').default_setup,
                                 },
