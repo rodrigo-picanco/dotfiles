@@ -8,7 +8,7 @@ lazygit() {
 
 packages() {
         lazygit
-        DEBIAN_FRONTEND=noninteractive sudo apt-get stow tmux zoxide -yq
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install stow tmux zoxide -yq
 }
 
 tpm() {
