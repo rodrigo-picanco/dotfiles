@@ -32,7 +32,7 @@ symlinks() {
 gitconfig() {
         git config --global rerere.enable true
         git config --global column.ui auto 
-        git config --global branch.sort -commiterdate
+        git config --global branch.sort -committerdate
 }
 
 install() {
