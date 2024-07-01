@@ -20,11 +20,10 @@ package_managers(){
 }
 
 symlinks() {
-        DOTFILES_PATH=$(pwd)
-        pushd ~
-                cp $DOTFILES_PATH -R dotfiles
-                rm .zshrc
-        popd
+        if [ ! -d ~/dotfiles ]; then
+                cp $(pwd) -R ~/dotfiles
+        fi
+
         cd ~/dotfiles
         stow configs
 }
