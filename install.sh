@@ -7,7 +7,7 @@ lazygit() {
 }
 
 packages() {
-        sudo add-apt-repository universe  
+        sudo apt-get update  
         lazygit
         DEBIAN_FRONTEND=noninteractive sudo apt-get install stow tmux zoxide -yq
 }
