@@ -1,0 +1,51 @@
+- name: Install and configure development environment
+  hosts: localhost
+  become: yes
+  vars:
+    home_dir: "{{ ansible_user_dir }}"
+  tasks:
+    - name: Install packages
+      block: 
+      - name: Update apt cache
+        apt:
+          update_cache: yes
+        delay: 60
+        register: apt_update_result
+        retries: 10
+        until: apt_update_result is success
+        environment:
+          DEBIAN_FRONTEND: noninteractive
+      - name: Install packages
+        apt:
+          name:
+            - stow
+            - tmux
+          state: present
+        environment:
+          DEBIAN_FRONTEND: noninteractive
+    - name: Install zoxide
+      shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+      args:
+        creates: "{{ home_dir }}/.local/bin/zoxide"
+
+    - name: Install LazyGit
+      shell: |
+        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+        tar xf lazygit.tar.gz lazygit
+        sudo install lazygit /usr/local/bin
+      args:
+        creates: /usr/local/bin/lazygit
+    - name: Clone TPM (Tmux Plugin Manager)
+      git:
+        repo: https://github.com/tmux-plugins/tpm
+        dest: "{{ home_dir }}/.tmux/plugins/tpm"
+    - name: Configure Git
+      git_config:
+        name: "{{ item.name }}"
+        scope: global
+        value: "{{ item.value }}"
+      loop:
+        - { name: "rerere.enable", value: "true" }
+        - { name: "column.ui", value: "auto" }
+        - { name: "branch.sort", value: "-committerdate" }

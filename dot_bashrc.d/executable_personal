@@ -1,0 +1,3 @@
+eval "$(zoxide init bash)"
+export EDITOR=nvim
+export VISUAL=nvim
