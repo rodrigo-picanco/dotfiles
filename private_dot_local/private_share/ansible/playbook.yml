@@ -1,51 +1,85 @@
-- name: Install and configure development environment
+---
+- name: macOS Minimal Setup and Essential CLI Tools
   hosts: localhost
-  become: yes
+  connection: local
+  gather_facts: true
+  
   vars:
-    home_dir: "{{ ansible_user_dir }}"
-  tasks:
-    - name: Install packages
-      block: 
-      - name: Update apt cache
-        apt:
-          update_cache: yes
-        delay: 60
-        register: apt_update_result
-        retries: 10
-        until: apt_update_result is success
-        environment:
-          DEBIAN_FRONTEND: noninteractive
-      - name: Install packages
-        apt:
-          name:
-            - stow
-            - tmux
-          state: present
-        environment:
-          DEBIAN_FRONTEND: noninteractive
-    - name: Install zoxide
-      shell: curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-      args:
-        creates: "{{ home_dir }}/.local/bin/zoxide"
+    cli_tools:
+      - zoxide
+      - ripgrep
+      - neovim
+      - fzf
+      - lazygit
+      - lazydocker
+      - docker
+      - docker-compose
+      - colima
+      - k9s
+      - chezmoi
+      - tmux
+      - gh
+      - opencode
 
-    - name: Install LazyGit
-      shell: |
-        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-        tar xf lazygit.tar.gz lazygit
-        sudo install lazygit /usr/local/bin
-      args:
-        creates: /usr/local/bin/lazygit
-    - name: Clone TPM (Tmux Plugin Manager)
-      git:
-        repo: https://github.com/tmux-plugins/tpm
-        dest: "{{ home_dir }}/.tmux/plugins/tpm"
-    - name: Configure Git
-      git_config:
-        name: "{{ item.name }}"
-        scope: global
-        value: "{{ item.value }}"
-      loop:
-        - { name: "rerere.enable", value: "true" }
-        - { name: "column.ui", value: "auto" }
-        - { name: "branch.sort", value: "-committerdate" }
+    brew_casks:
+      - ghostty
+      - raycast
+      - aerospace
+      - hammerspoon
+
+  tasks:
+    - name: Ensure Xcode Command Line Tools are installed
+      ansible.builtin.command: xcode-select --install
+      ignore_errors: true 
+      tags: [prerequisite, xcode]
+      
+    - name: Update Homebrew formulae (brew update)
+      community.general.homebrew:
+        update_homebrew: true
+      tags: [prerequisite, brew]
+
+    - name: Upgrade all installed Homebrew packages (brew upgrade)
+      community.general.homebrew:
+        upgrade_all: true
+      tags: [prerequisite, brew]
+      
+    - name: Install essential command-line packages via Homebrew
+      community.general.homebrew:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ cli_tools }}"
+      tags: [install, cli]
+
+    - name: Install GUI applications via Homebrew Cask
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ brew_casks }}"
+      tags: [install, cask, gui]
+
+    - name: Ensure Tmux Package Manager (tpm) is cloned
+      ansible.builtin.git:
+        repo: 'https://github.com/tmux-plugins/tpm'
+        # The fact usage has been updated to follow Ansible 2.24+ recommendations
+        dest: '{{ ansible_facts["user_dir"] }}/.tmux/plugins/tpm' 
+        version: HEAD
+        update: yes
+      tags: [install, tmux]
+
+    - name: Install OhMyZsh
+      ansible.builtin.shell:
+        cmd: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        creates: ~/.oh-my-zsh
+
+    - name: Install ASDF version manager
+      ansible.builtin.git:
+        repo: 'https://github.com/asdf-vm/asdf.git'
+        dest: '{{ ansible_facts["user_dir"] }}/.asdf'
+        version: master
+        update: yes
+      tags: [install, asdf]
+
+    - name: Tidy up Homebrew (run 'brew cleanup')
+      ansible.builtin.command: brew cleanup
+      changed_when: false
+      tags: [cleanup]
