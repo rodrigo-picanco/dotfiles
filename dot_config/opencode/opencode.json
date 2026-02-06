@@ -1,14 +1,21 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "catppuccin-transparent",
-  "provider": {
+  "compaction": {
+    "auto": true,
+    "prune": true
+  },
+  "theme": "catppuccin-transparent", 
+  "provider": { 
     "lm-studio": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "LMS",
       "models": {
         "qwen3-coder-30b-a3b-instruct": {
           "name": "Qwen Coder 30B"
-        }
+        },
+	"zai-org/glm-4.7-flash": {
+	  "name": "GLM 4.7 flash"
+	}
       },
       "options": {
         "baseURL": "http://127.0.0.1:1234/v1"
@@ -17,5 +24,27 @@
   },
   "plugin": [
     "opencode-anthropic-auth@latest"
-  ]
+  ],
+  "mcp": {
+    "atlassian": {
+      "type": "remote",
+      "url": "https://mcp.atlassian.com/v1/mcp",
+      "enabled": false,
+      "oauth": {}
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+	"Authorization": "Bearer {env:GITHUB_TOKEN}"
+      },
+      "enabled": false
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp",
+      "oauth": {},
+      "enabled": false
+    }
+  }
 }
